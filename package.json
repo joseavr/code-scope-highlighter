@@ -6,7 +6,7 @@
 	"repository": "https://github.com/joseavr/code-highlighter",
 	"icon": "code-scope-highlighter-logo.webp",
 	"license": "MIT",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"engines": {
 		"vscode": "^1.90.0"
 	},
@@ -59,7 +59,10 @@
 						"type": "string"
 					},
 					"description": "Language IDs (e.g. python, ruby) for which indentation scope highlighting is enabled when allowHighlightIndentation is on. See https://code.visualstudio.com/docs/languages/identifiers",
-					"default": ["python", "ruby"]
+					"default": [
+						"python",
+						"ruby"
+					]
 				}
 			}
 		}
@@ -71,7 +74,6 @@
 		"watch": "npm-run-all -p watch:*",
 		"watch:esbuild": "node esbuild.js --watch",
 		"watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-		
 		"compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
 		"compile-tests": "tsc -p . --outDir out",
 		"test": "vscode-test",
