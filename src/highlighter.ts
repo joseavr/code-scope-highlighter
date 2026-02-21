@@ -51,60 +51,120 @@ class Highlighter {
 		const offset = editor.document.offsetAt(editor.selection.active)
 		const text = editor.document.getText()
 
-		let backwardResult: MatchingBracket
-		let forwardResult: MatchingBracket
+		let leftbracket: MatchingBracket
+		let rightbracket: MatchingBracket
 
+		//
+		// Triple """ or ``` - cursor after closing
+		// 
+		// """..."""
+		//          ^
+		//
+		if (util.isCloseTripleQuote(text, offset - 1)) {
+			leftbracket = util.findLeftOpenTripleBracket(text, offset - 4, '"""')
+			rightbracket = { bracket: '"""', offset: offset - 3 }
+		} else if (util.isCloseTripleBacktick(text, offset - 1)) {
+			leftbracket = util.findLeftOpenTripleBracket(text, offset - 4, "```")
+			rightbracket = { bracket: "```", offset: offset - 3 }
+		}
+
+		//
+		// Triple """ or ``` - cursor at opening
+		//
+		// """..."""
+		// ^
+		else if (util.isOpenTripleQuote(text, offset)) {
+			leftbracket = { bracket: '"""', offset: offset }
+			rightbracket = util.findRightCloseTripleBracket(text, offset + 3, '"""')
+		} else if (util.isOpenTripleBacktick(text, offset)) {
+			leftbracket = { bracket: "```", offset: offset }
+			rightbracket = util.findRightCloseTripleBracket(text, offset + 3, "```")
+		}
+
+		// 
+		// Single char - cursor after closing
+		//
+		// Example:
 		// ^: cursor position
 		// (...)
 		//      ^
-		if (util.isCloseBracket(text.charAt(offset - 1))) {
-			backwardResult = util.findLeftBracket(text, offset - 2)
-			forwardResult = util.findRightBracket(text, offset - 1)
+		//
+		else if (util.isCloseBracket(text.charAt(offset - 1))) {
+			leftbracket = util.findLeftOpenBracket(text, offset - 2)
+			rightbracket = util.findRightCloseBracket(text, offset - 1)
 		}
 
+		//
+		// Single char - cursor at opening
+		//
+		// Example:
 		//  (...)
 		//  ^
+		//
 		else if (util.isOpenBracket(text.charAt(offset))) {
-			backwardResult = util.findLeftBracket(text, offset)
-			forwardResult = util.findRightBracket(text, offset + 1)
+			leftbracket = util.findLeftOpenBracket(text, offset)
+			rightbracket = util.findRightCloseBracket(text, offset + 1)
 		}
 
-		// (.)
+		//
+		// Cursor inside
+		//
+		// Example:
+		// (...)
 		//	 ^
 		else {
-			backwardResult = util.findLeftBracket(text, offset - 1)
-			forwardResult = util.findRightBracket(text, offset)
+			leftbracket = util.findLeftOpenBracket(text, offset - 1)
+			rightbracket = util.findRightCloseBracket(text, offset)
 		}
 
 		const shouldHighlight = util.shouldHighlight(
 			this.userConfigHighlightingMode,
 			offset,
-			backwardResult,
-			forwardResult
+			leftbracket,
+			rightbracket
 		)
 
-		// set up the decoratiosn to highlight the scope and matching brackets
+		//
+		// Set up the decorations to highlight the scope and matching brackets
+		// 
 		if (
-			util.isMatchingBracket(backwardResult.bracket, forwardResult.bracket) &&
+			util.isMatchingBracket(leftbracket.bracket, rightbracket.bracket) &&
 			shouldHighlight
 		) {
+			const bracketLength = leftbracket.bracket.length || 1
+			//
+			// Start must be the first index of the inside range
+			// 
 			let start =
-				backwardResult.offset < text.length
-					? backwardResult.offset + 1
-					: backwardResult.offset
-			let end = forwardResult.offset
+				leftbracket.offset < text.length
+					? leftbracket.offset + bracketLength
+					: leftbracket.offset
+			// 
+			// End must be the last index of the inside range + 1
+			// since vscode.Range second param is exclusive
+			// 
+			let end = rightbracket.offset
 
+			// 
+			// Open bracket decoration
+			// 
 			const start_decoration = new vscode.Range(
-				editor.document.positionAt(start - 1),
+				editor.document.positionAt(start - bracketLength),
 				editor.document.positionAt(start)
 			)
+			//
+			// Inside range decoration
+			//
 			const range_decoration = new vscode.Range(
 				editor.document.positionAt(start),
 				editor.document.positionAt(end)
 			)
+			//
+			// Close bracket decoration
+			//
 			const end_decoration = new vscode.Range(
 				editor.document.positionAt(end),
-				editor.document.positionAt(end + 1)
+				editor.document.positionAt(end + bracketLength)
 			)
 
 			var rangeDecorations = []
