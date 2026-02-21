@@ -6,7 +6,7 @@
 	"repository": "https://github.com/joseavr/code-highlighter",
 	"icon": "code-scope-highlighter-logo.webp",
 	"license": "MIT",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"engines": {
 		"vscode": "^1.90.0"
 	},
