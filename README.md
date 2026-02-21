@@ -23,7 +23,7 @@ A customizable scope highlighter, inspired by Dr Racket IDE.
   - Place cursor on `>` of any tag to highlight: content inside the tag
 - **Customizable Colors:** Personalize your highlight colors for brackets, braces, and parentheses.
 - **Flexible Modes:** Choose from "near", "always", or "never" highlight modes to suit your coding style.
-- **(Soon) Language Specific Settings:** Enable or disable highlighting for specific programming languages.
+- **Indentation-based scope:** For languages like Python and Ruby, fall back to indentation-based scope highlighting when no bracket pairs are detected.
 
 ## 🌟 Why ScopeHighlighter?
 - **Boost Productivity:** Quickly understand the structure of your code, making it easier to debug and develop.
@@ -51,6 +51,14 @@ For color picker: https://vuetifyjs.com/en/components/color-pickers/
 ### `codeScopeHighlighter.bracketColor` - Bracket Color
 - **Default**: `#4d4d4d30`
 - **Description**: Color for highlighting the matching brackets. (Hex format)
+
+### `codeScopeHighlighter.allowHighlightIndentation` - Allow Indentation Scope Highlighting
+- **Default**: `false`
+- **Description**: When enabled, fall back to indentation-based scope highlighting when no bracket pairs are detected. Useful for languages like Python and Ruby that use indentation for blocks.
+
+### `codeScopeHighlighter.highlightIndentationLangIds` - Languages for Indentation Highlighting
+- **Default**: `["python", "ruby"]`
+- **Description**: Language IDs for which indentation scope highlighting is enabled when `allowHighlightIndentation` is on. Use [VS Code language identifiers](https://code.visualstudio.com/docs/languages/identifiers) (e.g. `python`, `ruby`, `yaml`).
 
 ## 🎯 HTML Tag Highlighting
 

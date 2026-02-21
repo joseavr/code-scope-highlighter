@@ -1,5 +1,6 @@
 import * as vscode from "vscode"
 import util from "./util"
+import { computeIndentationScope } from "./indentation-scope"
 import { HighlighterMode, MatchingBracket } from "./types"
 
 class Highlighter {
@@ -126,11 +127,12 @@ class Highlighter {
 
 		//
 		// Set up the decorations to highlight the scope and matching brackets
-		// 
-		if (
+		//
+		const hasValidBracketPair =
 			util.isMatchingBracket(leftbracket.bracket, rightbracket.bracket) &&
 			shouldHighlight
-		) {
+
+		if (hasValidBracketPair) {
 			const bracketLength = leftbracket.bracket.length || 1
 			//
 			// Start must be the first index of the inside range
@@ -176,7 +178,44 @@ class Highlighter {
 			endDecorations.push(start_decoration)
 			endDecorations.push(end_decoration)
 			editor.setDecorations(this.scoperEndDecorationType, endDecorations)
+		} else if (this.shouldUseIndentationFallback(editor)) {
+			const lines = text.split("\n")
+			const cursorLine = editor.selection.active.line
+			const tabSize = (editor.options.tabSize as number) ?? 4
+			const scope = computeIndentationScope(
+				lines,
+				cursorLine,
+				tabSize
+			)
+
+			if (scope) {
+				const range_decoration = new vscode.Range(
+					scope.startLine,
+					0,
+					scope.endLine,
+					lines[scope.endLine]?.length ?? 0
+				)
+				editor.setDecorations(this.scoperRangeDecorationType, [
+					range_decoration,
+				])
+			}
 		}
+	}
+
+	private shouldUseIndentationFallback(editor: vscode.TextEditor): boolean {
+		const config = vscode.workspace.getConfiguration("codeScopeHighlighter")
+		const allowHighlightIndentation = config.get<boolean>(
+			"allowHighlightIndentation",
+			false
+		)
+		const langIds = config.get<string[]>(
+			"highlightIndentationLangIds",
+			["python", "ruby"]
+		)
+		return (
+			allowHighlightIndentation &&
+			langIds.includes(editor.document.languageId)
+		)
 	}
 
 	dispose(): void {
