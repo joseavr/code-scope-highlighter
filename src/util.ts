@@ -1,26 +1,39 @@
 import * as vscode from "vscode"
 import { HighlighterMode, MatchingBracket } from "./types"
 
-let openingBrackets = ""
-let closingBrackets = ""
+const TRIPLE_QUOTE = '"""'
+const TRIPLE_BACKTICK = "```"
+
+let openingBrackets: string[] = []
+let closingBrackets: string[] = []
 
 function updateConfig() {
 	const activeEditor = vscode.window.activeTextEditor
 
 	if (activeEditor) {
-		openingBrackets = "({["
-		closingBrackets = ")}]"
+		openingBrackets = ["`", `'`, `"`, "(", "{", "["]
+		closingBrackets = ["`", `'`, `"`, ")", "}", "]"]
 	}
 }
 
 function isMatchingBracket(open: string, close: string) {
 	switch (open) {
+		case TRIPLE_QUOTE:
+			return close === TRIPLE_QUOTE
+		case TRIPLE_BACKTICK:
+			return close === TRIPLE_BACKTICK
 		case "(":
 			return close === ")"
 		case "{":
 			return close === "}"
 		case "[":
 			return close === "]"
+		case `"`:
+			return close === `"`
+		case `'`:
+			return close === `'`
+		case "`":
+			return close === "`"
 		default:
 			return false
 	}
@@ -34,19 +47,62 @@ function isCloseBracket(char: string) {
 	return closingBrackets.includes(char)
 }
 
-// Finds to the left the nearest open bracket using a stack.
-// Starting from the cursor position (index) to the beginning of the (text)
-function findLeftBracket(text: string, index: number): MatchingBracket {
+function isCloseTripleQuote(text: string, offset: number): boolean {
+	return (
+		offset >= 3 &&
+		text.charAt(offset) === '"' &&
+		text.charAt(offset - 1) === '"' &&
+		text.charAt(offset - 2) === '"'
+	)
+}
+
+function isOpenTripleQuote(text: string, offset: number): boolean {
+	return (
+		offset + 2 < text.length &&
+		text.charAt(offset) === '"' &&
+		text.charAt(offset + 1) === '"' &&
+		text.charAt(offset + 2) === '"'
+	)
+}
+
+function isCloseTripleBacktick(text: string, offset: number): boolean {
+	return (
+		offset >= 3 &&
+		text.charAt(offset) === "`" &&
+		text.charAt(offset - 1) === "`" &&
+		text.charAt(offset - 2) === "`"
+	)
+}
+
+function isOpenTripleBacktick(text: string, offset: number): boolean {
+	return (
+		offset + 2 < text.length &&
+		text.charAt(offset) === "`" &&
+		text.charAt(offset + 1) === "`" &&
+		text.charAt(offset + 2) === "`"
+	)
+}
+
+
+/** 
+ * Finds to the left, the nearest open bracket.
+ * 
+ * Scans starting from the cursor position `index` to the beginning of the `text`
+ * 
+ * @param text text from current editor tab
+ * @param index current position of the cursor in the text
+ */
+function findLeftOpenBracket(text: string, index: number): MatchingBracket {
 	const bracketStack = []
-	let offset = 0
-	let bracket = ""
+	let openbracketIndex = 0
+	let openbracket = ""
 
 	for (let i = index; i >= 0; i--) {
 		let char = text.charAt(i)
 		if (isOpenBracket(char)) {
 			if (bracketStack.length === 0) {
-				bracket = char
-				offset = i
+				openbracket = char
+				openbracketIndex = i
 				break
 			} else {
 				let top = bracketStack.pop()!
@@ -59,21 +115,28 @@ function findLeftBracket(text: string, index: number): MatchingBracket {
 		}
 	}
 
-	return { bracket, offset }
+	return { bracket: openbracket, offset: openbracketIndex }
 }
 
-// Finds to the right the nearest open bracket using a stack.
-// Starting from the cursor position (index) to the end of the (text)
-function findRightBracket(text: string, index: number): MatchingBracket {
+
+/**
+ * Finds to the right, the nearest close bracket.
+ * 
+ * Starting from the cursor position `index` to the end of the `text`
+ * 
+ * @param text text from current editor tab
+ * @param index current position of the cursor in the text
+ */
+function findRightCloseBracket(text: string, index: number): MatchingBracket {
 	const bracketStack = []
-	let offset = text.length
-	let bracket = ""
+	let closebracketIndex = text.length
+	let closebracket = ""
 	for (let i = index; i < text.length; i++) {
 		let char = text.charAt(i)
 		if (isCloseBracket(char)) {
 			if (bracketStack.length === 0) {
-				offset = i
-				bracket = char
+				closebracketIndex = i
+				closebracket = char
 				break
 			} else {
 				let top = bracketStack.pop()!
@@ -86,7 +149,58 @@ function findRightBracket(text: string, index: number): MatchingBracket {
 		}
 	}
 
-	return { bracket, offset }
+	return { bracket: closebracket, offset: closebracketIndex }
+}
+
+/**
+ * Finds the matching opening triple bracket (""" or ```) to the left.
+ * Use when cursor is after a closing triple.
+ */
+function findLeftOpenTripleBracket(
+	text: string,
+	startIndex: number,
+	triple: string
+): MatchingBracket {
+	const char = triple.charAt(0)
+
+	for (let i = startIndex; i >= 0; i--) {
+		if (
+			text.length > i + 2 &&
+			text.charAt(i) === char &&
+			text.charAt(i + 1) === char &&
+			text.charAt(i + 2) === char
+		) {
+			return { bracket: triple, offset: i }
+		}
+	}
+
+	// if not found
+	return { bracket: "", offset: 0 }
+}
+
+/**
+ * Finds the matching closing triple bracket (""" or ```) to the right.
+ * Use when cursor is after an opening triple.
+ */
+function findRightCloseTripleBracket(
+	text: string,
+	startIndex: number,
+	triple: string
+): MatchingBracket {
+	const char = triple.charAt(0)
+
+	for (let i = startIndex; i < text.length; i++) {
+		if (
+			text.length > i + 2 &&
+			text.charAt(i) === char &&
+			text.charAt(i + 1) === char &&
+			text.charAt(i + 2) === char
+		) {
+			return { bracket: triple, offset: i }
+		}
+	}
+
+	return { bracket: "", offset: text.length }
 }
 
 function shouldHighlight(
@@ -98,9 +212,10 @@ function shouldHighlight(
 	switch (highlighterMode) {
 		// highlight only when the cursor is next to the matching bracket
 		case HighlighterMode.Near:
+			const bracketLength = rightMatchingBracket.bracket.length || 1
 			return (
 				offset === leftMatchingBracket.offset ||
-				offset === rightMatchingBracket.offset + 1
+				offset === rightMatchingBracket.offset + bracketLength
 			)
 		case HighlighterMode.Always:
 			return true
@@ -140,8 +255,14 @@ export default {
 	isMatchingBracket,
 	isOpenBracket,
 	isCloseBracket,
-	findLeftBracket,
-	findRightBracket,
+	isCloseTripleQuote,
+	isOpenTripleQuote,
+	isCloseTripleBacktick,
+	isOpenTripleBacktick,
+	findLeftOpenBracket,
+	findRightCloseBracket,
+	findLeftOpenTripleBracket,
+	findRightCloseTripleBracket,
 	shouldHighlight,
 	setRangeStyle,
 	setEndStyle,

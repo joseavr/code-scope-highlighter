@@ -1,5 +1,6 @@
 export interface MatchingBracket {
 	bracket: string
+	/** The offset must point the beginning of the bracket */
 	offset: number
 }
 
