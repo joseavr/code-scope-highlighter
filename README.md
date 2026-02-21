@@ -60,33 +60,12 @@ For color picker: https://vuetifyjs.com/en/components/color-pickers/
 - **Default**: `["python", "ruby"]`
 - **Description**: Language IDs for which indentation scope highlighting is enabled when `allowHighlightIndentation` is on. Use [VS Code language identifiers](https://code.visualstudio.com/docs/languages/identifiers) (e.g. `python`, `ruby`, `yaml`).
 
-## 🎯 HTML Tag Highlighting
-
-The extension now supports HTML tag highlighting with intelligent cursor positioning:
-
-### How it works:
-- **Cursor on `<` of start tag:** Highlights the entire tag including start tag, content, and end tag
-- **Cursor on `>` of any tag:** Highlights only the content inside the tag (excluding the end tag's opening bracket)
-- **Cursor inside tag content:** Highlights the content and end tag
-
-### Example:
-```html
-<div class="container">
-    <h1>Hello World</h1>
-    <p>This is a <strong>test</strong> paragraph.</p>
-</div>
-```
-
-- Place cursor on `<` of `<div>` → highlights entire div block
-- Place cursor on `>` of `<div>` → highlights content inside div
-- Place cursor on `<` of `<h1>` → highlights h1 tag and content
-- Place cursor on `>` of `</h1>` → highlights h1 content only
 
 ## 🗺️ Roadmap 
 
+- [x] **Bracket Specific Settings:** Implement highlighting for specific matching bracket symbols.
+- [x] **Language Specific Settings:** Implement highlighting for specific programming languages (Python, Ruby).
 - [ ] **HTML support:** Implement highlighting for nested html tags.
-- [ ] **Language Specific Settings:** Implement highlighting for specific programming languages.
-- [ ] **Bracket Specific Settings:** Implement highlighting for specific matching bracket symbols.
 
 
 ## 📄 License
@@ -95,4 +74,5 @@ This project is licensed under the **MIT** - see the [MIT](https://github.com/xa
 
 ## For Devs
 
-Start Debugging right away with `F5` or Command Pallete `Debug: Start Debugging`
+- Run `npm watch`
+- Start Debugging right away with `F5` or Command Pallete `Debug: Start Debugging`
