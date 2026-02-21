@@ -48,17 +48,17 @@
 					"default": "near",
 					"description": "Choose when the scope highlight should be active: 'near' for when the cursor is near the bracket, 'always' to always highlight, and 'never' to never highlight."
 				},
-				"codeScopeHighlighter.allowHighlightIndentation": {
+				"codeScopeHighlighter.allowCodeBlockHighlighting": {
 					"type": "boolean",
-					"description": "When enabled, fall back to indentation-based scope highlighting when no bracket pairs are detected. Useful for languages like Python and Ruby.",
+					"description": "When enabled, fall back to code block highlighting when no bracket pairs are detected. Useful for languages like Python and Ruby.",
 					"default": false
 				},
-				"codeScopeHighlighter.highlightIndentationLangIds": {
+				"codeScopeHighlighter.highlightCodeBlockLangIds": {
 					"type": "array",
 					"items": {
 						"type": "string"
 					},
-					"description": "Language IDs (e.g. python, ruby) for which indentation scope highlighting is enabled when allowHighlightIndentation is on. See https://code.visualstudio.com/docs/languages/identifiers",
+					"description": "Language IDs (e.g. python, ruby) for which code block highlighting is enabled when allowHighlightIndentation is `on`. See https://code.visualstudio.com/docs/languages/identifiers",
 					"default": [
 						"python",
 						"ruby"
