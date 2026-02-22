@@ -15,6 +15,8 @@
 
 A customizable scope highlighter, inspired by Dr Racket IDE.
 
+Code Scope Highlighter extension highlights the scope of matching brackets with customizable colors and flexible highlight modes. Supports code block highlighting for any language.
+
 ## ✨ Features
 - **Universal highlighting:** ScopeHighlighter works on any language!
 - **Dynamic Highlighting:** Instantly see the scope of matching brackets with vibrant colors.
