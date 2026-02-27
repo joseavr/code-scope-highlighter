@@ -82,8 +82,31 @@ class Highlighter {
 			rightbracket = util.findRightCloseTripleBracket(text, offset + 3, "```")
 		}
 
+
+		//
+		// String delimiter, single char - cursor after closing
+		// "..."
+		//      ^
+		//
+		if (util.isStringDelimiter(text, offset - 1)) {
+			const charDelimiter = text[offset-1]
+			leftbracket = util.findLeftStringDelimiter(text, offset - 2, charDelimiter)
+			rightbracket = { bracket: charDelimiter, offset: offset - 1}
+		}
+
+		//
+		// String delimiter, single char - cursor at opening
+		// "..."
+		// ^
+		//
+		if (util.isStringDelimiter(text, offset)) {
+			const charDelimiter = text[offset]
+			leftbracket = { bracket: charDelimiter, offset: offset}
+			rightbracket = util.findRightStringDelimiter(text, offset + 1, charDelimiter)
+		}
+
 		// 
-		// Single char - cursor after closing
+		// Bracket, single char - cursor after closing
 		//
 		// Example:
 		// ^: cursor position
@@ -96,7 +119,7 @@ class Highlighter {
 		}
 
 		//
-		// Single char - cursor at opening
+		// Bracket, single char - cursor at opening
 		//
 		// Example:
 		//  (...)

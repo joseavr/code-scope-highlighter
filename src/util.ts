@@ -11,8 +11,8 @@ function updateConfig() {
 	const activeEditor = vscode.window.activeTextEditor
 
 	if (activeEditor) {
-		openingBrackets = ["`", `'`, `"`, "(", "{", "["]
-		closingBrackets = ["`", `'`, `"`, ")", "}", "]"]
+		openingBrackets = ["(", "{", "["]
+		closingBrackets = [")", "}", "]"]
 	}
 }
 
@@ -45,6 +45,11 @@ function isOpenBracket(char: string) {
 
 function isCloseBracket(char: string) {
 	return closingBrackets.includes(char)
+}
+
+function isStringDelimiter(text: string, offset: number) {
+	const char = text.charAt(offset)
+	return char === `"` || char === `'` || char === "`"
 }
 
 function isCloseTripleQuote(text: string, offset: number): boolean {
@@ -119,6 +124,40 @@ function findLeftOpenBracket(text: string, index: number): MatchingBracket {
 }
 
 
+function findRightStringDelimiter(text: string, startIndex: number, delimiterChar: string) {
+
+
+	for (let i = startIndex; i < text.length; i++) {
+		if (
+			i + 1 < text.length &&
+			text.charAt(i) === delimiterChar
+		) {
+			return { bracket: delimiterChar, offset: i }
+		}
+	}
+
+	// not found
+	return { bracket: "", offset: 0 }
+
+}
+
+function findLeftStringDelimiter(text: string, startIndex: number, delimiterChar: string) {
+
+
+	for (let i = startIndex; i >= 0; i--) {
+		if (
+			text.length > i + 2 &&
+			text.charAt(i) === delimiterChar
+		) {
+			return { bracket: delimiterChar, offset: i }
+		}
+	}
+
+	// not found
+	return { bracket: "", offset: 0 }
+
+}
+
 /**
  * Finds to the right, the nearest close bracket.
  * 
@@ -174,7 +213,7 @@ function findLeftOpenTripleBracket(
 		}
 	}
 
-	// if not found
+	// not found
 	return { bracket: "", offset: 0 }
 }
 
@@ -255,6 +294,7 @@ export default {
 	isMatchingBracket,
 	isOpenBracket,
 	isCloseBracket,
+	isStringDelimiter,
 	isCloseTripleQuote,
 	isOpenTripleQuote,
 	isCloseTripleBacktick,
@@ -263,6 +303,8 @@ export default {
 	findRightCloseBracket,
 	findLeftOpenTripleBracket,
 	findRightCloseTripleBracket,
+	findLeftStringDelimiter,
+	findRightStringDelimiter,
 	shouldHighlight,
 	setRangeStyle,
 	setEndStyle,
