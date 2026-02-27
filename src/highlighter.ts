@@ -88,10 +88,12 @@ class Highlighter {
 		// "..."
 		//      ^
 		//
-		if (util.isStringDelimiter(text, offset - 1)) {
-			const delimiterChar = text[offset - 1]
+		else if (util.isStringDelimiter(text, offset - 1)) {
+			if (/^\s+$/.test(text.charAt(offset - 2))) return
+			const delimiterChar = text.charAt(offset - 1)
 			leftbracket = util.findLeftStringDelimiter(text, offset - 2, delimiterChar)
 			rightbracket = { bracket: delimiterChar, offset: offset - 1 }
+
 		}
 
 		//
@@ -99,10 +101,12 @@ class Highlighter {
 		// "..."
 		// ^
 		//
-		if (util.isStringDelimiter(text, offset)) {
-			const delimiterChar = text[offset]
+		else if (util.isStringDelimiter(text, offset)) {
+			if (/^\s+$/.test(text.charAt(offset + 1))) return
+			const delimiterChar = text.charAt(offset)
 			leftbracket = { bracket: delimiterChar, offset: offset }
 			rightbracket = util.findRightStringDelimiter(text, offset + 1, delimiterChar)
+			console.log({ char: text[424], char2: text[425] })
 		}
 
 		// 
@@ -114,7 +118,7 @@ class Highlighter {
 		//      ^
 		//
 		else if (util.isCloseBracket(text.charAt(offset - 1))) {
-			const closingbracketChar = text[offset - 1]
+			const closingbracketChar = text.charAt(offset - 1)
 			leftbracket = util.findLeftOpenBracket(text, offset - 2)
 			rightbracket = { bracket: closingbracketChar, offset: offset - 1 }
 		}
@@ -127,7 +131,7 @@ class Highlighter {
 		//  ^
 		//
 		else if (util.isOpenBracket(text.charAt(offset))) {
-			const openbracketChar = text[offset - 1]
+			const openbracketChar = text.charAt(offset)
 			leftbracket = { bracket: openbracketChar, offset: offset }
 			rightbracket = util.findRightCloseBracket(text, offset + 1)
 		}
