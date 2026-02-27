@@ -73,8 +73,3 @@ For color picker: https://vuetifyjs.com/en/components/color-pickers/
 ## 📄 License
 
 This project is licensed under the **MIT** - see the [MIT](https://github.com/xavimondev/easyreadme/blob/main/LICENSE) file for details.
-
-## For Devs
-
-- Run `npm watch`
-- Start Debugging right away with `F5` or Command Pallete `Debug: Start Debugging`
