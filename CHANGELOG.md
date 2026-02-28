@@ -1,6 +1,6 @@
 # Scope Highlighter Change Log
 
-## v1.3.5, v1.3.6, v1.3.7
+## v1.3.5, v1.3.6, v1.3.7, v1.3.8
 
 - Fix: mismatch highlight on string delimiter in some cases
   - Added more test cases
