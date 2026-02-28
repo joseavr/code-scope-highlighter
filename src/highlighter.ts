@@ -89,11 +89,10 @@ class Highlighter {
 		//      ^
 		//
 		else if (util.isStringDelimiter(text, offset - 1)) {
-			if (/^\s+$/.test(text.charAt(offset - 2))) return
+			if (/^\s|<|{|\(|\[$/.test(text.charAt(offset - 2))) return
 			const delimiterChar = text.charAt(offset - 1)
 			leftbracket = util.findLeftStringDelimiter(text, offset - 2, delimiterChar)
 			rightbracket = { bracket: delimiterChar, offset: offset - 1 }
-
 		}
 
 		//
@@ -106,7 +105,6 @@ class Highlighter {
 			const delimiterChar = text.charAt(offset)
 			leftbracket = { bracket: delimiterChar, offset: offset }
 			rightbracket = util.findRightStringDelimiter(text, offset + 1, delimiterChar)
-			console.log({ char: text[424], char2: text[425] })
 		}
 
 		// 
