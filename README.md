@@ -19,11 +19,9 @@ Code Scope Highlighter extension highlights the scope of matching brackets with 
 
 ## ✨ Features
 - **Universal highlighting:** ScopeHighlighter works on any language!
-- **Dynamic Highlighting:** Instantly see the scope of matching brackets with vibrant colors.
-- **HTML Tag Support:** Highlight nested HTML tags with intelligent cursor positioning:
-  - Place cursor on `<` of start tag to highlight: start tag + content + end tag
-  - Place cursor on `>` of any tag to highlight: content inside the tag
-- **Customizable Colors:** Personalize your highlight colors for brackets, braces, and parentheses.
+- **Dynamic Highlighting:** Instantly see the scope of matching brackets with vibrant colors on:
+  - `{`, `[`, `(`, ', ", `, ```
+- **Customizable Colors:** Personalize your highlight colors for brackets, braces, and parentheses for light or dark themes.
 - **Flexible Modes:** Choose from "near", "always", or "never" highlight modes to suit your coding style.
 - **Indentation-based scope:** For languages like Python and Ruby, fall back to indentation-based scope highlighting when no bracket pairs are detected.
 
@@ -46,13 +44,24 @@ For color picker: https://vuetifyjs.com/en/components/color-pickers/
     - `always` to always highlight,
     - `never` to never highlight.
 
-### `codeScopeHighlighter.scopeColor` - Scope Color
-- **Default**: `#4d4d4d30`
+### `codeScopeHighlighter.scopeColorLight` - Scope Color for Light Theme
+- **Default**: `#4d4d4d89`
 - **Description**: Color for highlighting the entire scope of matching brackets. (Hex format)
 
-### `codeScopeHighlighter.bracketColor` - Bracket Color
+### `codeScopeHighlighter.scopeColorDark` - Scope Color for Dark Theme
+- **Default**: `#4d4d4d89`
+- **Description**: Color for highlighting the entire scope of matching brackets. (Hex format)
+
+
+### `codeScopeHighlighter.bracketColorLight` - Bracket Color for Light Theme
 - **Default**: `#4d4d4d30`
 - **Description**: Color for highlighting the matching brackets. (Hex format)
+
+
+### `codeScopeHighlighter.bracketColorDark` - Bracket Color for Dark Theme
+- **Default**: `#dc2626dd`
+- **Description**: Color for highlighting the matching brackets. (Hex format)
+
 
 ### `codeScopeHighlighter.allowHighlightIndentation` - Allow Indentation Scope Highlighting
 - **Default**: `false`

@@ -28,15 +28,25 @@
 			"type": "object",
 			"title": "Scope Highlighter",
 			"properties": {
-				"codeScopeHighlighter.scopeColor": {
+				"codeScopeHighlighter.scopeColorLight": {
 					"type": "string",
-					"description": "Color for highlighting the entire scope of matching brackets. (Hex format)",
+					"description": "Light Theme: Color for highlighting the entire scope of matching brackets. (Hex format)",
 					"default": "#4d4d4d89"
 				},
-				"codeScopeHighlighter.bracketColor": {
+				"codeScopeHighlighter.scopeColorDark": {
 					"type": "string",
-					"description": "Color for highlighting the matching brackets. (Hex format)",
+					"description": "Dark Theme: Color for highlighting the entire scope of matching brackets. (Hex format)",
 					"default": "#4d4d4d89"
+				},
+				"codeScopeHighlighter.bracketColorLight": {
+					"type": "string",
+					"description": "Light Theme: Color for highlighting the matching brackets. (Hex format)",
+					"default": "#4d4d4d30"
+				},
+				"codeScopeHighlighter.bracketColorDark": {
+					"type": "string",
+					"description": "Dark Theme: Color for highlighting the matching brackets. (Hex format)",
+					"default": "#dc2626dd"
 				},
 				"codeScopeHighlighter.matchBrackets": {
 					"type": "string",

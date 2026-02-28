@@ -268,11 +268,11 @@ function shouldHighlight(
 function setRangeStyle() {
 	return vscode.window.createTextEditorDecorationType({
 		light: {
-			backgroundColor: "#4d4d4d30"
+			backgroundColor: vscode.workspace.getConfiguration("codeScopeHighlighter").scopeColorLight
 		},
 		dark: {
 			backgroundColor:
-				vscode.workspace.getConfiguration("codeScopeHighlighter").scopeColor,
+				vscode.workspace.getConfiguration("codeScopeHighlighter").scopeColorDark,
 		},
 	})
 }
@@ -280,11 +280,11 @@ function setRangeStyle() {
 function setEndStyle() {
 	return vscode.window.createTextEditorDecorationType({
 		light: {
-			backgroundColor: "#4d4d4d30"
+			backgroundColor: vscode.workspace.getConfiguration("codeScopeHighlighter").bracketColorLight
 		},
 		dark: {
 			backgroundColor:
-				vscode.workspace.getConfiguration("codeScopeHighlighter").bracketColor,
+				vscode.workspace.getConfiguration("codeScopeHighlighter").bracketColorDark,
 		},
 	})
 }
