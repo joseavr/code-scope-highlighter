@@ -1,9 +1,9 @@
 # Scope Highlighter Change Log
 
-## v1.3.5
+## v1.3.5, v1.3.6, v1.3.7
 
 - Fix: mismatch highlight on string delimiter in some cases
-  - Added more test case and now they pass 
+  - Added more test cases
 
 ## v1.3.4
 
