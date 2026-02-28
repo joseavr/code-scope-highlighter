@@ -1,12 +1,15 @@
 # Scope Highlighter Change Log
 
-## v0.0.1 - 2024-07-03
+## v1.3.5
 
-- Initial release
+- Fix: mismatch highlight on string delimiter in some cases
+  - Added more test case and now they pass 
 
-## v1.2.0
+## v1.3.4
 
-- Added support for quotes, triple quotes, backticks, triple backticks.
+- Fix: highlighting issue on string delimiter
+  - Brackets now find the correct closing bracket
+- Chore: refactor for a small optimization
 
 ## v1.3.0
 
@@ -14,8 +17,12 @@
 - **New setting `allowHighlightIndentation`:** Master switch for indentation scope highlighting (default: off).
 - **New setting `highlightIndentationLangIds`:** Language IDs that use indentation highlighting when enabled (default: `["python", "ruby"]`).
 
-## v1.3.4
 
-- Fix: highlighting issue on string delimiter
-  - Brackets now find the correct closing bracket
-- Chore: refactor for a small optimization
+## v1.2.0
+
+- Added support for quotes, triple quotes, backticks, triple backticks.
+
+
+## v0.0.1 - 2024-07-03
+
+- Initial release
